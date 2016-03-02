@@ -1,0 +1,23 @@
+{
+    "name"              : "cursame-analytics",
+    "description"       : "Platform to store and perform analytics on the assignments, courses, students and teachers information.",
+    "version"           : "1.0.0",
+    "private"           : true,
+    "dependencies"  : {
+        "bcrypt"        : "0.8.5",
+        "body-parser"   : "1.15.0",
+        "debug"         : "2.2.0",
+        "express"       : "4.13.4",
+        "mongoose"      : "4.4.5",
+        "morgan"        : "1.7.0"
+    },
+    "devDependencies"   : {
+        "mocha"         : "2.4.5",
+        "should"        : "8.2.2",
+        "supertest"     : "1.2.0"
+    },
+    "scripts"           : {
+        "start"         : "DEBUG=app node server.js",
+        "test"          : "istanbul cover _mocha -- -u exports -R spec"
+    }
+}
