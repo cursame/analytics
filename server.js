@@ -9,6 +9,10 @@ app.set( 'env', process.env.ENV || 'development' );
 
 start.launch( app );
 
+var sessions        = require( './routers/sessions' );
+
+app.use( '/sessions', sessions );
+
 var server  = app.listen( app.get('port'), function() {
     debug( 'Express server listening on port ' + server.address().port );
 });
