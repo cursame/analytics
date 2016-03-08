@@ -1,13 +1,21 @@
 var assert      = require( 'assert' ),
     should      = require( 'should' ),
     request     = require( 'supertest' ),
-    server      = require( '../server' );
+    server      = require( '../server' ),
+    Auth        = require( './lib/auth' );
 
 describe( 'AnalyticsAPI', function () {
-    it ( 'return a 404 error for an invalid resource request', function ( done ) {
+    it ( 'return a 401 for an unsigned request', function ( done ) {
+        request( server )
+            .post( '/sessions' )
+            .expect( 401, done );
+    });
+
+    it ( 'return a 403 error for an invalid resource request', function ( done ) {
         request( server )
             .get( '/invalid' )
-            .expect( 404, done );
+            .send( Auth.sign() )
+            .expect( 403, done );
     });
 
     it ( 'return a 200 status code for an options request', function ( done ) {
@@ -31,14 +39,14 @@ describe( 'Sessions', function () {
     it ( 'should get a 403 error when attempting to start a session with invalid credentials', function ( done ) {
         request( server )
             .post( '/sessions' )
-            .send( invalid )
+            .send( Auth.sign( invalid ) )
             .expect( 403, done );
     });
 
     it ( 'should start a session in the system', function ( done ) {
         request( server )
             .post( '/sessions' )
-            .send( user )
+            .send( Auth.sign( user ) )
             .end( function ( err, res ) {
                 if ( err ) {
                     throw err;
@@ -53,13 +61,15 @@ describe( 'Sessions', function () {
 
     it ( 'should get a 404 error when attempting to delete an unexisting session', function ( done ) {
         request( server )
-            .delete( '/sessions/56de11812a4bec800a2fefd8' )
+            .delete( '/sessions/4b61cce1e9de32f6c2c77d702b2286ff0058d9011ad69cadb39149f99cafd48b' )
+            .send( Auth.sign() )
             .expect( 404, done );
     });
 
     it ( 'should terminate the statrted session', function ( done ) {
         request( server )
             .delete( '/sessions/' + session )
+            .send( Auth.sign() )
             .expect( 200, done );
     });
 });
