@@ -30,7 +30,7 @@ var mongoose    = require( 'mongoose' ),
         },
         pass            : {
             type        : String,
-            required    : true
+            required    : false
         },
         type            : {
             type        : Number,
