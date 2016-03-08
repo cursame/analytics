@@ -15,12 +15,4 @@ var mongoose    = require( 'mongoose' ),
         }
     });
 
-FileSchema.pre( 'save', function ( next ) {
-    if ( this.course && this.isModified( 'course' ) ) {
-        this.course     = new mongoose.Types.ObjectId( this.course );
-    }
-
-    next();
-});
-
 module.exports      = mongoose.model( 'File', FileSchema );

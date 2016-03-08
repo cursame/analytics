@@ -15,12 +15,4 @@ var mongoose    = require( 'mongoose' ),
         }
     });
 
-LoginSchema.pre( 'save', function ( next ) {
-    if ( this.user && this.isModified( 'user' ) ) {
-        this.user   = new mongoose.Types.ObjectId( this.user );
-    }
-
-    next();
-});
-
 module.exports  = mongoose.model( 'Login', LoginSchema );

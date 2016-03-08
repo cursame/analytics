@@ -20,16 +20,4 @@ var mongoose        = require( 'mongoose' ),
         }
     });
 
-CommentSchema.pre( 'save', function ( next ) {
-    if ( this.course && this.isModified( 'course' ) ) {
-        this.course     = new mongoose.Types.ObjectId( this.course );
-    }
-
-    if ( this.student && this.isModified( 'student' ) ) {
-        this.student    = new mongoose.Types.ObjectId( this.student );
-    }
-
-    next();
-});
-
 module.exports      = mongoose.model( 'Comment', CommentSchema );
