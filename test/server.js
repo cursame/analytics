@@ -208,3 +208,89 @@ describe( 'Applications Removal', function () {
             .expect( 404, done );
     });
 });
+
+describe( 'Users', function () {
+    var user        = {
+            email       : 'testing@cursa.me',
+            external_id : 'abcdef1234',
+            name        : 'UnitTesting',
+            pass        : 'unittest',
+            type        : 0
+        },
+        user_id     = '',
+        hashed_pass = '';
+
+    it ( 'get a 403 error when attempting to create an user with invalid data', function ( done ) {
+        request( server )
+            .post( '/users' )
+            .send( Auth.sign({ email : user.email }) )
+            .expect( 403, done );
+    });
+
+    it ( 'create a user in the system', function ( done ) {
+        request( server )
+            .post( '/users' )
+            .send( Auth.sign( user ) )
+            .end( function ( err, res ) {
+                if ( err ) {
+                    throw err;
+                }
+
+                res.body.should.have.property( '_id' );
+                res.body.should.have.property( 'email' );
+                res.body.should.have.property( 'external_id' );
+                res.body.should.have.property( 'name' );
+                res.body.should.have.property( 'pass' );
+                res.body.should.have.property( 'type' );
+
+                user_id     = res.body._id;
+                hashed_pass = res.body.pass;
+                done();
+            });
+    });
+
+    it ( 'get a 404 error when attempting to update an unexisting user', function ( done ) {
+        request( server )
+            .put( '/users/125253' )
+            .send( Auth.sign({ name : 'UnitTestingUser' }) )
+            .expect( 404, done );
+    });
+
+    it ( 'get a 403 error when attempting to set an existing external id', function ( done ) {
+        request( server )
+            .put( '/users/' + user_id )
+            .send( Auth.sign( { external_id : 1 } ) )
+            .expect( 403, done );
+    });
+
+    it ( 'update the created user without changing the password', function ( done ) {
+        request( server )
+            .put( '/users/' + user_id )
+            .send( Auth.sign({ name : 'UnitTestingUser', pass : 'mod_pass' }) )
+            .end( function ( err, res ) {
+                if ( err ) {
+                    throw err;
+                }
+
+                res.body.should.have.property( 'name' );
+
+                assert.equal( 'UnitTestingUser', res.body.name );
+                assert.equal( hashed_pass, res.body.pass );
+                done();
+            });
+    });
+
+    it ( 'get a 404 error when attempting to remove an unexisting user', function ( done ) {
+        request( server )
+            .delete( '/users/131553' )
+            .send( Auth.sign() )
+            .expect( 404, done );
+    });
+
+    it ( 'removes the user created for testing purposes', function ( done ) {
+        request( server )
+            .delete( '/users/' + user_id )
+            .send( Auth.sign() )
+            .expect( 200, done );
+    });
+});
