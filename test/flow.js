@@ -16,6 +16,14 @@ describe( 'Courses Resource', function () {
             date        : ( new Date() ).toISOString()
         },
         comment_id      = '',
+        course          = {
+            description : 'Unit test course',
+            end         : ( new Date() ).toISOString(),
+            name        : 'UnitTest',
+            start       : ( new Date() ).toISOString(),
+            students    : []
+        },
+        course_id       = '',
         discussion      = {
             date        : ( new Date() ).toISOString(),
             name        : 'Test Discussion',
@@ -27,14 +35,11 @@ describe( 'Courses Resource', function () {
             file        : 'TestFile.jpg'
         },
         file_id         = '',
-        course          = {
-            description : 'Unit test course',
-            end         : ( new Date() ).toISOString(),
-            name        : 'UnitTest',
-            start       : ( new Date() ).toISOString(),
-            students    : []
+        grade           = {
+            date        : ( new Date() ).toISOString(),
+            grade       : 9.5
         },
-        course_id       = '',
+        grade_id        = '',
         student         = {
             email       : 'student@cursa.me',
             external_id : 'student_1',
@@ -76,6 +81,8 @@ describe( 'Courses Resource', function () {
 
                 student_id          = res.body._id;
                 comment.student     = res.body._id;
+                grade.student       = res.body._id;
+
                 course.students.push( res.body._id );
                 assignment.students.push( res.body._id );
                 discussion.students.push( res.body._id );
@@ -112,6 +119,7 @@ describe( 'Courses Resource', function () {
                 comment.course      = res.body._id;
                 discussion.course   = res.body._id;
                 file.course         = res.body._id;
+                grade.course        = res.body._id;
                 done();
             });
     });
@@ -277,6 +285,47 @@ describe( 'Courses Resource', function () {
     it ( 'removes the created file record', function ( done ) {
         request( server )
             .delete( '/files/' + file_id )
+            .send( Auth.sign() )
+            .expect( 200, done );
+    });
+
+    it ( 'gets a 403 error when attempting to create an invalid grade object', function ( done ) {
+        request( server )
+            .post( '/grades' )
+            .send( Auth.sign({ student : grade.student, date : grade.date }) )
+            .expect( 403, done );
+    });
+
+    it ( 'creates an grade record in the system', function ( done ) {
+        request( server )
+            .post( '/grades' )
+            .send( Auth.sign( grade ) )
+            .end( function ( err, res ) {
+                if ( err ) {
+                    throw err;
+                }
+
+                res.body.should.have.property( '_id' );
+                res.body.should.have.property( 'course' );
+                res.body.should.have.property( 'date' );
+                res.body.should.have.property( 'grade' );
+                res.body.should.have.property( 'student' );
+
+                grade_id   = res.body._id;
+                done();
+            });
+    });
+
+    it ( 'gets a 404 error when attempting to remove an unexisting grade', function ( done ) {
+        request( server )
+            .delete( '/grades/1241225' )
+            .send( Auth.sign() )
+            .expect( 404, done );
+    });
+
+    it ( 'removes the created grade record', function ( done ) {
+        request( server )
+            .delete( '/grades/' + grade_id )
             .send( Auth.sign() )
             .expect( 200, done );
     });

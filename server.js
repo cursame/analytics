@@ -13,9 +13,10 @@ start.launch( app );
 var applications    = require( './routers/applications' ),
     assignments     = require( './routers/assignments' ),
     comments        = require( './routers/comments' ),
+    courses         = require( './routers/courses' ),
     discussions     = require( './routers/discussions' ),
     files           = require( './routers/files' ),
-    courses         = require( './routers/courses' ),
+    grades          = require( './routers/grades' ),
     sessions        = require( './routers/sessions' ),
     users           = require( './routers/users' );
 
@@ -25,6 +26,7 @@ app.use( '/comments', comments );
 app.use( '/courses', courses );
 app.use( '/discussions', discussions );
 app.use( '/files', files );
+app.use( '/grades', grades );
 app.use( '/sessions', sessions );
 app.use( '/users', users );
 
