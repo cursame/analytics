@@ -16,7 +16,7 @@ var mongoose            = require( 'mongoose' ),
         students        : {
             type        : [ mongoose.Schema.Types.ObjectId ],
             ref         : 'User',
-            required    : true
+            required    : false
         }
     });
 
