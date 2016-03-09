@@ -5,6 +5,11 @@ var mongoose    = require( 'mongoose' ),
             ref         : 'Course',
             required    : true
         },
+        date            : {
+            type        : Date,
+            required    : true,
+            default     : Date.now
+        },
         grade           : {
             type        : Number,
             required    : true
