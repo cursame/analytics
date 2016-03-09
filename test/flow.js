@@ -11,6 +11,11 @@ describe( 'Courses Resource', function () {
             students    : []
         },
         assignment_id   = '',
+        comment         = {
+            comment     : 'Test comment',
+            date        : ( new Date() ).toISOString()
+        },
+        comment_id      = '',
         course          = {
             description : 'Unit test course',
             end         : ( new Date() ).toISOString(),
@@ -135,6 +140,47 @@ describe( 'Courses Resource', function () {
     it ( 'removes the created assignment record', function ( done ) {
         request( server )
             .delete( '/assignments/' + assignment_id )
+            .send( Auth.sign() )
+            .expect( 200, done );
+    });
+
+    it ( 'gets a 403 error when attempting to create an invalid comment object', function ( done ) {
+        request( server )
+            .post( '/comments' )
+            .send( Auth.sign({ student : comment.students, date : comment.date }) )
+            .expect( 403, done );
+    });
+
+    it ( 'creates an comment record in the system', function ( done ) {
+        request( server )
+            .post( '/comments' )
+            .send( Auth.sign( comment ) )
+            .end( function ( err, res ) {
+                if ( err ) {
+                    throw err;
+                }
+
+                res.body.should.have.property( '_id' );
+                res.body.should.have.property( 'comment' );
+                res.body.should.have.property( 'course' );
+                res.body.should.have.property( 'date' );
+                res.body.should.have.property( 'student' );
+
+                comment_id   = res.body._id;
+                done();
+            });
+    });
+
+    it ( 'gets a 404 error when attempting to remove an unexisting comment', function ( done ) {
+        request( server )
+            .delete( '/comments/1241225' )
+            .send( Auth.sign() )
+            .expect( 404, done );
+    });
+
+    it ( 'removes the created comment record', function ( done ) {
+        request( server )
+            .delete( '/comments/' + comment_id )
             .send( Auth.sign() )
             .expect( 200, done );
     });

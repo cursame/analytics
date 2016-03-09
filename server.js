@@ -12,12 +12,14 @@ start.launch( app );
 
 var applications    = require( './routers/applications' ),
     assignments     = require( './routers/assignments' ),
+    comments        = require( './routers/comments' ),
     courses         = require( './routers/courses' ),
     sessions        = require( './routers/sessions' ),
     users           = require( './routers/users' );
 
 app.use( '/applications', applications );
 app.use( '/assignments', assignments );
+app.use( '/comments', comments );
 app.use( '/courses', courses );
 app.use( '/sessions', sessions );
 app.use( '/users', users );
