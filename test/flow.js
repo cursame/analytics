@@ -16,6 +16,12 @@ describe( 'Courses Resource', function () {
             date        : ( new Date() ).toISOString()
         },
         comment_id      = '',
+        discussion      = {
+            date        : ( new Date() ).toISOString(),
+            name        : 'Test Discussion',
+            students    : []
+        },
+        discussion_id   = '',
         course          = {
             description : 'Unit test course',
             end         : ( new Date() ).toISOString(),
@@ -67,6 +73,7 @@ describe( 'Courses Resource', function () {
                 comment.student     = res.body._id;
                 course.students.push( res.body._id );
                 assignment.students.push( res.body._id );
+                discussion.students.push( res.body._id );
                 done();
             });
     });
@@ -98,6 +105,7 @@ describe( 'Courses Resource', function () {
                 course_id           = res.body._id;
                 assignment.course   = res.body._id;
                 comment.course      = res.body._id;
+                discussion.course   = res.body._id;
                 done();
             });
     });
@@ -181,6 +189,48 @@ describe( 'Courses Resource', function () {
     it ( 'removes the created comment record', function ( done ) {
         request( server )
             .delete( '/comments/' + comment_id )
+            .send( Auth.sign() )
+            .expect( 200, done );
+    });
+
+    it ( 'gets a 403 error when attempting to create an invalid discussion object', function ( done ) {
+        request( server )
+            .post( '/discussions' )
+            .send( Auth.sign({ students : discussion.students, date : discussion.date }) )
+            .expect( 403, done );
+    });
+
+    it ( 'creates an discussion record in the system', function ( done ) {
+        request( server )
+            .post( '/discussions' )
+            .send( Auth.sign( discussion ) )
+            .end( function ( err, res ) {
+                if ( err ) {
+                    throw err;
+                }
+
+                res.body.should.have.property( '_id' );
+                res.body.should.have.property( 'course' );
+                res.body.should.have.property( 'date' );
+                res.body.should.have.property( 'name' );
+                res.body.should.have.property( 'students' );
+
+                assert.equal( true, Array.isArray( res.body.students ) );
+                discussion_id   = res.body._id;
+                done();
+            });
+    });
+
+    it ( 'gets a 404 error when attempting to remove an unexisting discussion', function ( done ) {
+        request( server )
+            .delete( '/discussions/1241225' )
+            .send( Auth.sign() )
+            .expect( 404, done );
+    });
+
+    it ( 'removes the created discussion record', function ( done ) {
+        request( server )
+            .delete( '/discussions/' + discussion_id )
             .send( Auth.sign() )
             .expect( 200, done );
     });
