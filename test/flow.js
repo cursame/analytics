@@ -44,6 +44,12 @@ describe( 'Courses Resource', function () {
             date        : ( new Date() ).toISOString()
         },
         login_id        = '',
+        questionary     = {
+            date        : ( new Date() ).toISOString(),
+            name        : 'Test Questionary',
+            students    : []
+        },
+        questionary_id  = '',
         student         = {
             email       : 'student@cursa.me',
             external_id : 'student_1',
@@ -93,6 +99,7 @@ describe( 'Courses Resource', function () {
                 course.students.push( res.body._id );
                 assignment.students.push( res.body._id );
                 discussion.students.push( res.body._id );
+                questionary.students.push( res.body._id );
                 done();
             });
     });
@@ -127,6 +134,7 @@ describe( 'Courses Resource', function () {
                 discussion.course   = res.body._id;
                 file.course         = res.body._id;
                 grade.course        = res.body._id;
+                questionary.course  = res.body._id;
                 done();
             });
     });
@@ -373,6 +381,48 @@ describe( 'Courses Resource', function () {
     it ( 'removes the created login record', function ( done ) {
         request( server )
             .delete( '/logins/' + login_id )
+            .send( Auth.sign() )
+            .expect( 200, done );
+    });
+
+    it ( 'gets a 403 error when attempting to create an invalid questionary object', function ( done ) {
+        request( server )
+            .post( '/questionaries' )
+            .send( Auth.sign({ students : questionary.students, date : questionary.date }) )
+            .expect( 403, done );
+    });
+
+    it ( 'creates an questionary record in the system', function ( done ) {
+        request( server )
+            .post( '/questionaries' )
+            .send( Auth.sign( questionary ) )
+            .end( function ( err, res ) {
+                if ( err ) {
+                    throw err;
+                }
+
+                res.body.should.have.property( '_id' );
+                res.body.should.have.property( 'course' );
+                res.body.should.have.property( 'date' );
+                res.body.should.have.property( 'name' );
+                res.body.should.have.property( 'students' );
+
+                assert.equal( true, Array.isArray( res.body.students ) );
+                questionary_id   = res.body._id;
+                done();
+            });
+    });
+
+    it ( 'gets a 404 error when attempting to remove an unexisting questionary', function ( done ) {
+        request( server )
+            .delete( '/questionaries/1241225' )
+            .send( Auth.sign() )
+            .expect( 404, done );
+    });
+
+    it ( 'removes the created questionary record', function ( done ) {
+        request( server )
+            .delete( '/questionaries/' + questionary_id )
             .send( Auth.sign() )
             .expect( 200, done );
     });
