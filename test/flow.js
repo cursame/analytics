@@ -22,6 +22,11 @@ describe( 'Courses Resource', function () {
             students    : []
         },
         discussion_id   = '',
+        file            = {
+            date        : ( new Date() ).toISOString(),
+            file        : 'TestFile.jpg'
+        },
+        file_id         = '',
         course          = {
             description : 'Unit test course',
             end         : ( new Date() ).toISOString(),
@@ -106,6 +111,7 @@ describe( 'Courses Resource', function () {
                 assignment.course   = res.body._id;
                 comment.course      = res.body._id;
                 discussion.course   = res.body._id;
+                file.course         = res.body._id;
                 done();
             });
     });
@@ -231,6 +237,46 @@ describe( 'Courses Resource', function () {
     it ( 'removes the created discussion record', function ( done ) {
         request( server )
             .delete( '/discussions/' + discussion_id )
+            .send( Auth.sign() )
+            .expect( 200, done );
+    });
+
+    it ( 'gets a 403 error when attempting to create an invalid file object', function ( done ) {
+        request( server )
+            .post( '/files' )
+            .send( Auth.sign({ date : file.date, file : file.file }) )
+            .expect( 403, done );
+    });
+
+    it ( 'creates an file record in the system', function ( done ) {
+        request( server )
+            .post( '/files' )
+            .send( Auth.sign( file ) )
+            .end( function ( err, res ) {
+                if ( err ) {
+                    throw err;
+                }
+
+                res.body.should.have.property( '_id' );
+                res.body.should.have.property( 'course' );
+                res.body.should.have.property( 'date' );
+                res.body.should.have.property( 'file' );
+
+                file_id   = res.body._id;
+                done();
+            });
+    });
+
+    it ( 'gets a 404 error when attempting to remove an unexisting file', function ( done ) {
+        request( server )
+            .delete( '/files/1241225' )
+            .send( Auth.sign() )
+            .expect( 404, done );
+    });
+
+    it ( 'removes the created file record', function ( done ) {
+        request( server )
+            .delete( '/files/' + file_id )
             .send( Auth.sign() )
             .expect( 200, done );
     });
