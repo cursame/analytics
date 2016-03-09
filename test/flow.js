@@ -1,32 +1,38 @@
-var assert      = require( 'assert' ),
-    should      = require( 'should' ),
-    request     = require( 'supertest' ),
-    server      = require( '../server' ),
-    Auth        = require( './lib/auth' );
+var assert  = require( 'assert' ),
+    should  = require( 'should' ),
+    request = require( 'supertest' ),
+    server  = require( '../server' ),
+    Auth    = require( './lib/auth' );
 
 describe( 'Courses Resource', function () {
-    var course      = {
+    var assignment      = {
+            date        : ( new Date() ).toISOString(),
+            due_date    : ( new Date() ).toISOString(),
+            students    : []
+        },
+        assignment_id   = '',
+        course          = {
             description : 'Unit test course',
             end         : ( new Date() ).toISOString(),
             name        : 'UnitTest',
             start       : ( new Date() ).toISOString(),
             students    : []
         },
-        course_id   = '',
-        student     = {
+        course_id       = '',
+        student         = {
             email       : 'student@cursa.me',
             external_id : 'student_1',
             name        : 'John Doe',
             type        : 5
         },
-        student_id  = '',
-        teacher     = {
+        student_id      = '',
+        teacher         = {
             email       : 'teacher@cursa.me',
             external_id : 'teacher_1',
             name        : 'Jane Doe',
             type        : 4
         },
-        teacher_id  = '';
+        teacher_id      = '';
 
     it ( 'creates a teacher user in the system for the courses evaluation', function ( done ) {
         request( server )
@@ -52,13 +58,15 @@ describe( 'Courses Resource', function () {
                     throw err;
                 }
 
-                student_id  = res.body._id;
+                student_id          = res.body._id;
+                comment.student     = res.body._id;
                 course.students.push( res.body._id );
+                assignment.students.push( res.body._id );
                 done();
             });
     });
 
-    it ( 'get a 403 error when attempting to create an invalid course', function ( done ) {
+    it ( 'gets a 403 error when attempting to create an invalid course', function ( done ) {
         request( server )
             .post( '/courses' )
             .send( Auth.sign({ name : 'TestCourse', students : [ student_id ], teacher : teacher_id }) )
@@ -82,12 +90,56 @@ describe( 'Courses Resource', function () {
                 res.body.should.have.property( 'students' );
                 res.body.should.have.property( 'teacher' );
 
-                course_id   = res.body._id;
+                course_id           = res.body._id;
+                assignment.course   = res.body._id;
+                comment.course      = res.body._id;
                 done();
             });
     });
 
-    it ( 'get a 404 error when attempting to remove an unexisting course', function ( done ) {
+    it ( 'gets a 403 error when attempting to create an invalid assignment object', function ( done ) {
+        request( server )
+            .post( '/assignments' )
+            .send( Auth.sign({ students : assignment.students, date : assignment.date }) )
+            .expect( 403, done );
+    });
+
+    it ( 'creates an assignment record in the system', function ( done ) {
+        request( server )
+            .post( '/assignments' )
+            .send( Auth.sign( assignment ) )
+            .end( function ( err, res ) {
+                if ( err ) {
+                    throw err;
+                }
+
+                res.body.should.have.property( '_id' );
+                res.body.should.have.property( 'course' );
+                res.body.should.have.property( 'date' );
+                res.body.should.have.property( 'due_date' );
+                res.body.should.have.property( 'students' );
+
+                assert.equal( true, Array.isArray( res.body.students ) );
+                assignment_id   = res.body._id;
+                done();
+            });
+    });
+
+    it ( 'gets a 404 error when attempting to remove an unexisting assignment', function ( done ) {
+        request( server )
+            .delete( '/assignments/1241225' )
+            .send( Auth.sign() )
+            .expect( 404, done );
+    });
+
+    it ( 'removes the created assignment record', function ( done ) {
+        request( server )
+            .delete( '/assignments/' + assignment_id )
+            .send( Auth.sign() )
+            .expect( 200, done );
+    });
+
+    it ( 'gets a 404 error when attempting to remove an unexisting course', function ( done ) {
         request( server )
             .delete( '/courses/14142' )
             .send( Auth.sign() )

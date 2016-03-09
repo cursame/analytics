@@ -11,11 +11,13 @@ app.set( 'env', process.env.ENV || 'development' );
 start.launch( app );
 
 var applications    = require( './routers/applications' ),
+    assignments     = require( './routers/assignments' ),
     courses         = require( './routers/courses' ),
     sessions        = require( './routers/sessions' ),
     users           = require( './routers/users' );
 
 app.use( '/applications', applications );
+app.use( '/assignments', assignments );
 app.use( '/courses', courses );
 app.use( '/sessions', sessions );
 app.use( '/users', users );
