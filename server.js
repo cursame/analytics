@@ -17,6 +17,7 @@ var applications    = require( './routers/applications' ),
     discussions     = require( './routers/discussions' ),
     files           = require( './routers/files' ),
     grades          = require( './routers/grades' ),
+    logins          = require( './routers/logins' ),
     sessions        = require( './routers/sessions' ),
     users           = require( './routers/users' );
 
@@ -27,6 +28,7 @@ app.use( '/courses', courses );
 app.use( '/discussions', discussions );
 app.use( '/files', files );
 app.use( '/grades', grades );
+app.use( '/logins', logins );
 app.use( '/sessions', sessions );
 app.use( '/users', users );
 

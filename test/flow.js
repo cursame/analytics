@@ -40,6 +40,10 @@ describe( 'Courses Resource', function () {
             grade       : 9.5
         },
         grade_id        = '',
+        login           = {
+            date        : ( new Date() ).toISOString()
+        },
+        login_id        = '',
         student         = {
             email       : 'student@cursa.me',
             external_id : 'student_1',
@@ -82,6 +86,9 @@ describe( 'Courses Resource', function () {
                 student_id          = res.body._id;
                 comment.student     = res.body._id;
                 grade.student       = res.body._id;
+                login.user          = res.body._id;
+
+                login.type          = res.body.type;
 
                 course.students.push( res.body._id );
                 assignment.students.push( res.body._id );
@@ -326,6 +333,46 @@ describe( 'Courses Resource', function () {
     it ( 'removes the created grade record', function ( done ) {
         request( server )
             .delete( '/grades/' + grade_id )
+            .send( Auth.sign() )
+            .expect( 200, done );
+    });
+
+    it ( 'gets a 403 error when attempting to create an invalid login object', function ( done ) {
+        request( server )
+            .post( '/logins' )
+            .send( Auth.sign({ user : login.user, date : login.date }) )
+            .expect( 403, done );
+    });
+
+    it ( 'creates an login record in the system', function ( done ) {
+        request( server )
+            .post( '/logins' )
+            .send( Auth.sign( login ) )
+            .end( function ( err, res ) {
+                if ( err ) {
+                    throw err;
+                }
+
+                res.body.should.have.property( '_id' );
+                res.body.should.have.property( 'date' );
+                res.body.should.have.property( 'type' );
+                res.body.should.have.property( 'user' );
+
+                login_id   = res.body._id;
+                done();
+            });
+    });
+
+    it ( 'gets a 404 error when attempting to remove an unexisting login', function ( done ) {
+        request( server )
+            .delete( '/logins/1241225' )
+            .send( Auth.sign() )
+            .expect( 404, done );
+    });
+
+    it ( 'removes the created login record', function ( done ) {
+        request( server )
+            .delete( '/logins/' + login_id )
             .send( Auth.sign() )
             .expect( 200, done );
     });
