@@ -168,6 +168,84 @@ describe( 'Courses Resource', function () {
             });
     });
 
+    it ( 'gets a list of assignments from the system', function ( done ) {
+        request( server )
+            .get( '/assignments' )
+            .send( Auth.sign() )
+            .end( function ( err, res ) {
+                if ( err ) {
+                    throw err;
+                }
+
+                res.body.should.have.property( 'pagination' );
+                res.body.should.have.property( 'results' );
+                res.body.pagination.should.have.property( 'total' );
+                res.body.pagination.should.have.property( 'page' );
+                res.body.pagination.should.have.property( 'per_page' );
+
+                res.body.results[0].should.have.property( 'course' );
+                res.body.results[0].should.have.property( 'date' );
+                res.body.results[0].should.have.property( 'name' );
+                res.body.results[0].should.have.property( 'students' );
+
+                assert.equal( 'string', typeof res.body.results[0].course );
+                assert.equal( 'string', typeof res.body.results[0].students[0] );
+                assert.equal( true, Array.isArray( res.body.results ) );
+                done();
+            });
+    });
+
+    it ( 'gets an extended list of assignments filtered by course, setting the select fields of the query', function ( done ) {
+        request( server )
+            .get( '/assignments?course=' + course_id + '&expanded=true&page=1&per_page=10&sort=course&order=DESC&select=course+name+students' )
+            .send( Auth.sign() )
+            .end( function ( err, res ) {
+                if ( err ) {
+                    throw err;
+                }
+
+                console.log( res.body.results[0] );
+
+                res.body.should.have.property( 'pagination' );
+                res.body.should.have.property( 'results' );
+                res.body.pagination.should.have.property( 'total' );
+                res.body.pagination.should.have.property( 'page' );
+                res.body.pagination.should.have.property( 'per_page' );
+
+                res.body.results[0].should.have.property( 'course' );
+                res.body.results[0].should.have.property( 'name' );
+                res.body.results[0].should.have.property( 'students' );
+                res.body.results[0].should.not.have.property( 'date' );
+
+                assert.equal( 'object', typeof res.body.results[0].course );
+                assert.equal( 'object', typeof res.body.results[0].students[0] );
+                assert.equal( true, Array.isArray( res.body.results ) );
+                done();
+            });
+    });
+
+    it ( 'gets an aggregated list of courses by course', function ( done ) {
+        request( server )
+            .get( '/assignments?aggregate=course&course=' + course_id )
+            .send( Auth.sign() )
+            .end( function ( err, res ) {
+                if ( err ) {
+                    throw err;
+                }
+
+                res.body.should.have.property( 'pagination' );
+                res.body.should.have.property( 'results' );
+                res.body.pagination.should.have.property( 'total' );
+                res.body.pagination.should.have.property( 'page' );
+                res.body.pagination.should.have.property( 'per_page' );
+
+                res.body.results[0].should.have.property( '_id' );
+                res.body.results[0].should.have.property( 'count' );
+
+                done();
+            });
+    });
+
     it ( 'gets a 404 error when attempting to remove an unexisting assignment', function ( done ) {
         request( server )
             .delete( '/assignments/1241225' )
