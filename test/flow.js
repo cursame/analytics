@@ -8,6 +8,7 @@ describe( 'Courses Resource', function () {
     var assignment      = {
             date        : ( new Date() ).toISOString(),
             due_date    : ( new Date() ).toISOString(),
+            name        : 'Test Assignment',
             students    : []
         },
         assignment_id   = '',

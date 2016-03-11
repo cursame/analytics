@@ -8,6 +8,7 @@ router.post( '/', function ( req, res, next ) {
         course      : req.body.course,
         date        : req.body.date,
         due_date    : req.body.due_date,
+        name        : req.body.name,
         students    : req.body.students
     }, function ( err, assignment ) {
         if ( err || !assignment ) {
