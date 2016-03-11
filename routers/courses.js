@@ -1,7 +1,24 @@
 var express     = require( 'express' ),
     router      = express.Router(),
     Course      = require( '../models/course' ),
-    Session     = require( '../lib/session' );
+    Session     = require( '../lib/session' ),
+    Utils       = require( '../lib/utils' );
+
+router.get( '/', Session.validate, function ( req, res, next ) {
+    var filters     = [ 'end', 'name', 'start', 'students', 'teacher' ],
+        refs        = [
+            {
+                field   : 'students',
+                select  : 'avatar email external_id name'
+            },
+            {
+                field   : 'teacher',
+                select  : 'avatar email external_id name'
+            }
+        ];
+
+    Utils.paginate( Course, filters, refs, req, res, next );
+});
 
 router.post( '/', function ( req, res, next ) {
     Course.create({

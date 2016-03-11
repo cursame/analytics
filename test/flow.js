@@ -140,6 +140,64 @@ describe( 'Courses Resource', function () {
             });
     });
 
+    it ( 'gets a list of courses from the system setting the course name and teacher as optional filters', function ( done ) {
+        request( server )
+            .get( '/courses?$or={"name":"' + course.name + '"}&$or={"teacher":"' + teacher_id + '"}' )
+            .send( Auth.sign() )
+            .end( function ( err, res ) {
+                if ( err ) {
+                    throw err;
+                }
+
+                res.body.should.have.property( 'pagination' );
+                res.body.should.have.property( 'results' );
+                res.body.pagination.should.have.property( 'total' );
+                res.body.pagination.should.have.property( 'page' );
+                res.body.pagination.should.have.property( 'per_page' );
+
+                res.body.results[0].should.have.property( 'description' );
+                res.body.results[0].should.have.property( 'end' );
+                res.body.results[0].should.have.property( 'name' );
+                res.body.results[0].should.have.property( 'start' );
+                res.body.results[0].should.have.property( 'students' );
+                res.body.results[0].should.have.property( 'teacher' );
+
+                assert.equal( 'string', typeof res.body.results[0].students[0] );
+                assert.equal( 'string', typeof res.body.results[0].teacher );
+                assert.equal( true, Array.isArray( res.body.results ) );
+                done();
+            });
+    });
+
+    it ( 'gets an expanded list of courses from the system', function ( done ) {
+        request( server )
+            .get( '/courses?expanded=true' )
+            .send( Auth.sign() )
+            .end( function ( err, res ) {
+                if ( err ) {
+                    throw err;
+                }
+
+                res.body.should.have.property( 'pagination' );
+                res.body.should.have.property( 'results' );
+                res.body.pagination.should.have.property( 'total' );
+                res.body.pagination.should.have.property( 'page' );
+                res.body.pagination.should.have.property( 'per_page' );
+
+                res.body.results[0].should.have.property( 'description' );
+                res.body.results[0].should.have.property( 'end' );
+                res.body.results[0].should.have.property( 'name' );
+                res.body.results[0].should.have.property( 'start' );
+                res.body.results[0].should.have.property( 'students' );
+                res.body.results[0].should.have.property( 'teacher' );
+
+                assert.equal( 'object', typeof res.body.results[0].students[0] );
+                assert.equal( 'object', typeof res.body.results[0].teacher );
+                assert.equal( true, Array.isArray( res.body.results ) );
+                done();
+            });
+    });
+
     it ( 'gets a 403 error when attempting to create an invalid assignment object', function ( done ) {
         request( server )
             .post( '/assignments' )
