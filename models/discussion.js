@@ -13,11 +13,11 @@ var mongoose            = require( 'mongoose' ),
             type        : String,
             required    : true
         },
-        students        : {
-            type        : [ mongoose.Schema.Types.ObjectId ],
+        students        : [{
+            type        : mongoose.Schema.Types.ObjectId,
             ref         : 'User',
             required    : true
-        }
+        }]
     });
 
 module.exports          = mongoose.model( 'Discussion', DiscussionSchema );
