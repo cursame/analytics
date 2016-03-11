@@ -1,7 +1,24 @@
 var express     = require( 'express' ),
     router      = express.Router(),
     Discussion  = require( '../models/discussion' ),
-    Session     = require( '../lib/session' );
+    Session     = require( '../lib/session' ),
+    Utils       = require( '../lib/utils' );
+
+router.get( '/', Session.validate, function ( req, res, next ) {
+    var filters     = [ 'course', 'date', 'name' ],
+        refs        = [
+            {
+                field   : 'course',
+                select  : 'description end name start'
+            },
+            {
+                field   : 'students',
+                select  : 'avatar email external_id name'
+            }
+        ];
+
+    Utils.paginate( Discussion, filters, refs, req, res, next );
+});
 
 router.post( '/', function ( req, res, next ) {
     Discussion.create({

@@ -412,6 +412,33 @@ describe( 'Courses Resource', function () {
             });
     });
 
+    it ( 'gets a list of discussions from the system filtered by date', function ( done ) {
+        request( server )
+            .get( '/discussions?date=' + discussion.date )
+            .send( Auth.sign() )
+            .end( function ( err, res ) {
+                if ( err ) {
+                    throw err;
+                }
+
+                res.body.should.have.property( 'pagination' );
+                res.body.should.have.property( 'results' );
+                res.body.pagination.should.have.property( 'total' );
+                res.body.pagination.should.have.property( 'page' );
+                res.body.pagination.should.have.property( 'per_page' );
+
+                res.body.results[0].should.have.property( 'course' );
+                res.body.results[0].should.have.property( 'date' );
+                res.body.results[0].should.have.property( 'name' );
+                res.body.results[0].should.have.property( 'students' );
+
+                assert.equal( 'string', typeof res.body.results[0].course );
+                assert.equal( 'string', typeof res.body.results[0].students[0] );
+                assert.equal( true, Array.isArray( res.body.results ) );
+                done();
+            });
+    });
+
     it ( 'gets a 404 error when attempting to remove an unexisting discussion', function ( done ) {
         request( server )
             .delete( '/discussions/1241225' )
