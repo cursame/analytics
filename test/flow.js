@@ -612,6 +612,31 @@ describe( 'Courses Resource', function () {
             });
     });
 
+    it ( 'gets a list of logins from the system', function ( done ) {
+        request( server )
+            .get( '/logins' )
+            .send( Auth.sign() )
+            .end( function ( err, res ) {
+                if ( err ) {
+                    throw err;
+                }
+
+                res.body.should.have.property( 'pagination' );
+                res.body.should.have.property( 'results' );
+                res.body.pagination.should.have.property( 'total' );
+                res.body.pagination.should.have.property( 'page' );
+                res.body.pagination.should.have.property( 'per_page' );
+
+                res.body.results[0].should.have.property( 'date' );
+                res.body.results[0].should.have.property( 'type' );
+                res.body.results[0].should.have.property( 'user' );
+
+                assert.equal( 'string', typeof res.body.results[0].user );
+                assert.equal( true, Array.isArray( res.body.results ) );
+                done();
+            });
+    });
+
     it ( 'gets a 404 error when attempting to remove an unexisting login', function ( done ) {
         request( server )
             .delete( '/logins/1241225' )

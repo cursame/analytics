@@ -1,7 +1,20 @@
 var express     = require( 'express' ),
     router      = express.Router(),
     Login       = require( '../models/login' ),
-    Session     = require( '../lib/session' );
+    Session     = require( '../lib/session' ),
+    Utils       = require( '../lib/utils' );
+
+router.get( '/', Session.validate, function ( req, res, next ) {
+    var filters     = [ 'date', 'type', 'user' ],
+        refs        = [
+            {
+                field   : 'user',
+                select  : 'avatar name email external_id'
+            }
+        ];
+
+    Utils.paginate( Login, filters, refs, req, res, next );
+});
 
 router.post( '/', function ( req, res, next ) {
     Login.create({
