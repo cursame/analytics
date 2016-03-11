@@ -479,6 +479,31 @@ describe( 'Courses Resource', function () {
             });
     });
 
+    it ( 'gets a list of files from the system', function ( done ) {
+        request( server )
+            .get( '/files' )
+            .send( Auth.sign() )
+            .end( function ( err, res ) {
+                if ( err ) {
+                    throw err;
+                }
+
+                res.body.should.have.property( 'pagination' );
+                res.body.should.have.property( 'results' );
+                res.body.pagination.should.have.property( 'total' );
+                res.body.pagination.should.have.property( 'page' );
+                res.body.pagination.should.have.property( 'per_page' );
+
+                res.body.results[0].should.have.property( 'course' );
+                res.body.results[0].should.have.property( 'date' );
+                res.body.results[0].should.have.property( 'file' );
+
+                assert.equal( 'string', typeof res.body.results[0].course );
+                assert.equal( true, Array.isArray( res.body.results ) );
+                done();
+            });
+    });
+
     it ( 'gets a 404 error when attempting to remove an unexisting file', function ( done ) {
         request( server )
             .delete( '/files/1241225' )
