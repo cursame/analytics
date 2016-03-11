@@ -2,6 +2,7 @@ var express     = require( 'express' ),
     router      = express.Router(),
     User        = require( '../models/user' ),
     Session     = require( '../lib/session' ),
+    Utils       = require( '../lib/utils' ),
     findUser    = function ( id, cb ) {
         User.findById( id, function ( err, user ) {
             if ( err || !user ) {
@@ -11,6 +12,12 @@ var express     = require( 'express' ),
             }
         });
     };
+
+router.get( '/', Session.validate, function ( req, res, next ) {
+    var filters     = [ 'creation_date', 'email', 'external_id', 'name', 'type' ];
+
+    Utils.paginate( User, filters, [], req, res, next );
+});
 
 router.post( '/', function ( req, res, next ) {
     User.create({

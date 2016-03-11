@@ -105,6 +105,31 @@ describe( 'Courses Resource', function () {
             });
     });
 
+    it ( 'gets a list of users from the system', function ( done ) {
+        request( server )
+            .get( '/users' )
+            .send( Auth.sign() )
+            .end( function ( err, res ) {
+                if ( err ) {
+                    throw err;
+                }
+
+                res.body.should.have.property( 'pagination' );
+                res.body.should.have.property( 'results' );
+                res.body.pagination.should.have.property( 'total' );
+                res.body.pagination.should.have.property( 'page' );
+                res.body.pagination.should.have.property( 'per_page' );
+
+                res.body.results[0].should.have.property( 'creation_date' );
+                res.body.results[0].should.have.property( 'email' );
+                res.body.results[0].should.have.property( 'name' );
+                res.body.results[0].should.have.property( 'type' );
+
+                assert.equal( true, Array.isArray( res.body.results ) );
+                done();
+            });
+    });
+
     it ( 'gets a 403 error when attempting to create an invalid course', function ( done ) {
         request( server )
             .post( '/courses' )
