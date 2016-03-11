@@ -204,8 +204,6 @@ describe( 'Courses Resource', function () {
                     throw err;
                 }
 
-                console.log( res.body.results[0] );
-
                 res.body.should.have.property( 'pagination' );
                 res.body.should.have.property( 'results' );
                 res.body.pagination.should.have.property( 'total' );
@@ -283,6 +281,33 @@ describe( 'Courses Resource', function () {
                 res.body.should.have.property( 'student' );
 
                 comment_id   = res.body._id;
+                done();
+            });
+    });
+
+    it ( 'gets a list of comments from the system setting the course and student as inclusive filters', function ( done ) {
+        request( server )
+            .get( '/comments?$and={"course":"' + course_id + '"}&$and={"student":"' + student_id + '"}' )
+            .send( Auth.sign() )
+            .end( function ( err, res ) {
+                if ( err ) {
+                    throw err;
+                }
+
+                res.body.should.have.property( 'pagination' );
+                res.body.should.have.property( 'results' );
+                res.body.pagination.should.have.property( 'total' );
+                res.body.pagination.should.have.property( 'page' );
+                res.body.pagination.should.have.property( 'per_page' );
+
+                res.body.results[0].should.have.property( 'comment' );
+                res.body.results[0].should.have.property( 'course' );
+                res.body.results[0].should.have.property( 'date' );
+                res.body.results[0].should.have.property( 'student' );
+
+                assert.equal( 'string', typeof res.body.results[0].course );
+                assert.equal( 'string', typeof res.body.results[0].student );
+                assert.equal( true, Array.isArray( res.body.results ) );
                 done();
             });
     });

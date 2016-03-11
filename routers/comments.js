@@ -1,7 +1,24 @@
 var express     = require( 'express' ),
     router      = express.Router(),
     Comment     = require( '../models/comment' ),
+    Utils       = require( '../lib/utils' ),
     Session     = require( '../lib/session' );
+
+router.get( '/', Session.validate, function ( req, res, next ) {
+    var filters     = [ 'course', 'date', 'student' ],
+        refs        = [
+            {
+                field   : 'course',
+                select  : 'description name start teacher'
+            },
+            {
+                field   : 'student',
+                select  : 'avatar email external_id name'
+            }
+        ];
+
+    Utils.paginate( Comment, filters, refs, req, res, next );
+});
 
 router.post( '/', function ( req, res, next ) {
     Comment.create({
