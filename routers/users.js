@@ -19,6 +19,26 @@ router.get( '/', Session.validate, function ( req, res, next ) {
     Utils.paginate( User, filters, [], req, res, next );
 });
 
+router.get( '/:id', Session.validate, function ( req, res, next ) {
+    User.findById( req.param.id, function ( err, user ) {
+        if ( err || !user ) {
+            err         = new Error( 'Invalid user id' );
+            err.status  = 404;
+
+            res.json( err );
+        } else {
+            if ( req.session.user_id == user._id.toString() && req.session.access_level != 0 ) {
+                err         = new Error( 'Permission denied' );
+                err.status  = 403;
+
+                res.json( err );
+            } else {
+                res.json( user );
+            }
+        }
+    });
+});
+
 router.post( '/', function ( req, res, next ) {
     User.create({
         avatar      : req.body.avatar,
