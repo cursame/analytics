@@ -1,14 +1,15 @@
 var Chance      = require( 'chance' ),
     User        = require( '../models/user' ),
-    chance      = new Chance(),
-    nonce       = chance.integer({
-        min     : 1,
-        max     : 4294967296
-    }),
-    created     = 0,
-    iterated    = 0;
+    chance      = new Chance();
 
 exports.create  = function ( type, total, cb ) {
+    var created     = 0,
+        iterated    = 0,
+        nonce       = chance.integer({
+            min     : 1,
+            max     : 4294967296
+        });
+
     for ( var i = 0; i < total; i++ ) {
         User.create({
             avatar      : chance.avatar({
