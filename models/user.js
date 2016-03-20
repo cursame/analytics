@@ -22,7 +22,7 @@ var mongoose    = require( 'mongoose' ),
             }
         },
         external_id     : {
-            type        : String,
+            type        : Number,
             required    : true,
             index       : {
                 unique  : true
