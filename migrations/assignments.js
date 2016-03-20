@@ -15,7 +15,7 @@ var async           = require( 'async' ),
         }
     };
 
-exports.create  = function ( total, cb ) {
+exports.create      = function ( total, cb ) {
     var assignments = [],
         iterated    = 0;
 
@@ -82,4 +82,4 @@ exports.create  = function ( total, cb ) {
             });
         }
     });
-}
+};
