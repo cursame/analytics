@@ -1,10 +1,10 @@
-var Students        = require( './students' ),
+var Users           = require( './users' ),
     Utils           = require( '../lib/utils' );
     numberStudents  = process.argv[2];
 
 Utils.connectDB();
 
-Students.create( numberStudents, function ( total ) {
+Users.create( 2, numberStudents, function ( total ) {
     console.log( 'Students created: ' + numberStudents );
     process.exit();
 });
