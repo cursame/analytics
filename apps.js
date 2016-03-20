@@ -1,23 +1,11 @@
 // Load the required libraries
-var mongoose    = require( 'mongoose' ),
-    db          = require( './config/db' ),
-    Encrypt     = require( './lib/encrypt' ),
+var Encrypt     = require( './lib/encrypt' ),
+    Utils       = require( './lib/utils' ),
     Application = require( './models/application' ),
     UnitTest    = false,
-    WebClient   = false,
-    conn_str    = 'mongodb://';
+    WebClient   = false;
 
-if ( db.user ) {
-    conn_str    += db.user;
-    if ( db.pass ) {
-        conn_str    += ':' + db.pass;
-    }
-
-    conn_str    += '@';
-}
-conn_str        += db.host + ':' + db.port + '/' + db.database;
-
-mongoose.connect( conn_str );
+Utils.connectDB();
 
 Application.create({
     description : 'Unit testing application',

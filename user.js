@@ -1,24 +1,12 @@
-var mongoose    = require( 'mongoose' ),
-    db          = require( './config/db' ),
+var Utils       = require( './lib/utils' ),
     User        = require( './models/user' ),
     name        = process.argv[2],
     email       = process.argv[3],
     ext_id      = process.argv[4],
     pass        = process.argv[5],
-    type        = process.argv[6],
-    conn_str    = 'mongodb://';
+    type        = process.argv[6];
 
-if ( db.user ) {
-    conn_str    += db.user;
-    if ( db.pass ) {
-        conn_str    += ':' + db.pass;
-    }
-
-    conn_str    += '@';
-}
-conn_str        += db.host + ':' + db.port + '/' + db.database;
-
-mongoose.connect( conn_str );
+Utils.connectDB();
 
 User.create({
     email       : email,
