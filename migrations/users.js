@@ -8,7 +8,7 @@ var Chance      = require( 'chance' ),
     created     = 0,
     iterated    = 0;
 
-exports.create  = function ( total, cb ) {
+exports.create  = function ( type, total, cb ) {
     for ( var i = 0; i < total; i++ ) {
         User.create({
             avatar      : chance.avatar({
@@ -18,8 +18,8 @@ exports.create  = function ( total, cb ) {
             email       : chance.email(),
             external_id : nonce + i,
             name        : chance.name(),
-            pass        : 'student',
-            type        : 2
+            pass        : 'migration',
+            type        : type
         }, function ( err, user ) {
             if ( !err && user ) {
                 created++;
