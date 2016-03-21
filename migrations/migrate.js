@@ -5,16 +5,21 @@ var async               = require( 'async' ),
     Discussions         = require( './discussions' ),
     Files               = require( './files' ),
     Grades              = require( './grades' ),
+    Logins              = require( './logins' ),
+    Questionaries       = require( './questionaries' ),
     Users               = require( './users' ),
     Utils               = require( '../lib/utils' );
     numberStudents      = process.argv[2],
     numberTeachers      = process.argv[3],
-    numberCourses       = process.argv[4],
-    numberAssignments   = process.argv[5],
-    numberComments      = process.argv[6],
-    numberDiscussions   = process.argv[7],
-    numberFiles         = process.argv[8],
-    numberGrades        = process.argv[9];
+    numberAdmins        = process.argv[4],
+    numberCourses       = process.argv[5],
+    numberAssignments   = process.argv[6],
+    numberComments      = process.argv[7],
+    numberDiscussions   = process.argv[8],
+    numberFiles         = process.argv[9],
+    numberGrades        = process.argv[10],
+    numberLogins        = process.argv[11],
+    numberQuestionaries = process.argv[12];
 
 Utils.connectDB();
 
@@ -31,6 +36,15 @@ async.series([
     function ( callback ) {
         if ( numberTeachers !== undefined && numberTeachers > 0 ) {
             Users.create( 1, numberTeachers, function ( total ) {
+                callback( null, total );
+            });
+        } else {
+            callback( null, 0 );
+        }
+    },
+    function ( callback ) {
+        if ( numberAdmins !== undefined && numberAdmins > 0 ) {
+            Users.create( 3, numberAdmins, function ( total ) {
                 callback( null, total );
             });
         } else {
@@ -90,15 +104,36 @@ async.series([
         } else {
             callback( null, 0 );
         }
+    },
+    function ( callback ) {
+        if ( numberLogins !== undefined && numberLogins > 0 ) {
+            Logins.create( numberLogins, function ( total ) {
+                callback( null, total );
+            });
+        } else {
+            callback( null, 0 );
+        }
+    },
+    function ( callback ) {
+        if ( numberQuestionaries !== undefined && numberQuestionaries > 0 ) {
+            Questionaries.create( numberQuestionaries, function ( total ) {
+                callback( null, total );
+            });
+        } else {
+            callback( null, 0 );
+        }
     }
 ], function ( err, results ) {
     console.log( 'Students created: ' + results[0] );
     console.log( 'Teachers created: ' + results[1] );
-    console.log( 'Courses created: ' + results[2] );
-    console.log( 'Assignments created: ' + results[3] );
-    console.log( 'Comments created: ' + results[4] );
-    console.log( 'Discussions created: ' + results[5] );
-    console.log( 'Files created: ' + results[6] );
-    console.log( 'Grades created: ' + results[7] );
+    console.log( 'Admins created: ' + results[2] );
+    console.log( 'Courses created: ' + results[3] );
+    console.log( 'Assignments created: ' + results[4] );
+    console.log( 'Comments created: ' + results[5] );
+    console.log( 'Discussions created: ' + results[6] );
+    console.log( 'Files created: ' + results[7] );
+    console.log( 'Grades created: ' + results[8] );
+    console.log( 'Logins created: ' + results[9] );
+    console.log( 'Questionaries created: ' + results[10] );
     process.exit();
 });
