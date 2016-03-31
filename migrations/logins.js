@@ -13,6 +13,9 @@ var async           = require( 'async' ),
                     },
                     {
                         type    : 2
+                    },
+                    {
+                        type    : 3
                     }
                 ]
             }, function ( err, users ) {
@@ -44,6 +47,9 @@ exports.create      = function ( total, cb ) {
                             },
                             {
                                 type    : 2
+                            },
+                            {
+                                type    : 3
                             }
                         ]
                     }).select( '_id type' ).skip( skip ).exec( function ( err, user ) {
