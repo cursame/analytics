@@ -71,15 +71,11 @@ exports.create      = function ( total, maxStudents, cb ) {
                 },
                 function ( students, teacher, callback ) {
                     var year        = new Date().getFullYear(),
-                        startYear   = parseInt( chance.year({
-                            min     : year - 10,
-                            max     : year
-                        }) ),
                         start       = new Date( chance.hammertime() ),
                         end         = new Date( chance.hammertime() );
 
-                    start.setYear( startYear );
-                    end.setYear( startYear + 1 );
+                    start.setYear( year );
+                    end.setYear( year + 1 );
 
                     callback( null, students, teacher, start, end );
                 },
