@@ -1,4 +1,5 @@
 var async               = require( 'async' ),
+    Activities          = require( './activities' ),
     Assignments         = require( './assignments' ),
     Comments            = require( './comments' ),
     Courses             = require( './courses' ),
@@ -19,7 +20,8 @@ var async               = require( 'async' ),
     numberFiles         = process.argv[9],
     numberGrades        = process.argv[10],
     numberLogins        = process.argv[11],
-    numberQuestionaries = process.argv[12];
+    numberQuestionaries = process.argv[12],
+    numberActivities    = process.argv[13];
 
 Utils.connectDB();
 
@@ -122,6 +124,15 @@ async.series([
         } else {
             callback( null, 0 );
         }
+    },
+    function ( callback ) {
+        if ( numberActivities !== undefined && numberActivities > 0 ) {
+            Activities.create( numberActivities, function ( total ) {
+                callback( null, total );
+            });
+        } else {
+            callback( null, 0 );
+        }
     }
 ], function ( err, results ) {
     console.log( 'Students created: ' + results[0] );
@@ -135,5 +146,6 @@ async.series([
     console.log( 'Grades created: ' + results[8] );
     console.log( 'Logins created: ' + results[9] );
     console.log( 'Questionaries created: ' + results[10] );
+    console.log( 'Activities created: ' + results[11] );
     process.exit();
 });
