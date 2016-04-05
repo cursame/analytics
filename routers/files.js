@@ -5,11 +5,15 @@ var express     = require( 'express' ),
     Utils       = require( '../lib/utils' );
 
 router.get( '/', Session.validate, function ( req, res, next ) {
-    var filters     = [ 'course', 'date', 'file' ],
+    var filters     = [ 'course', 'date', 'file', 'teacher' ],
         refs        = [
             {
                 field   : 'course',
                 select  : 'description end name start'
+            },
+            {
+                field   : 'teacher',
+                select  : 'avatar email external_id name'
             }
         ];
 
@@ -20,7 +24,8 @@ router.post( '/', function ( req, res, next ) {
     File.create({
         course  : req.body.course,
         date    : req.body.date,
-        file    : req.body.file
+        file    : req.body.file,
+        teacher : req.body.teacher
     }, function ( err, file ) {
         if ( err || !file ) {
             err         = new Error( 'Invalid file data' );
