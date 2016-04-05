@@ -10,7 +10,8 @@ app.set( 'env', process.env.ENV || 'development' );
 
 start.launch( app );
 
-var applications    = require( './routers/applications' ),
+var activities      = require( './routers/activities' ),
+    applications    = require( './routers/applications' ),
     assignments     = require( './routers/assignments' ),
     comments        = require( './routers/comments' ),
     courses         = require( './routers/courses' ),
@@ -22,6 +23,7 @@ var applications    = require( './routers/applications' ),
     sessions        = require( './routers/sessions' ),
     users           = require( './routers/users' );
 
+app.use( '/activities', activities );
 app.use( '/applications', applications );
 app.use( '/assignments', assignments );
 app.use( '/comments', comments );
