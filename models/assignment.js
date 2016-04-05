@@ -21,7 +21,12 @@ var mongoose            = require( 'mongoose' ),
             type        : mongoose.Schema.Types.ObjectId,
             ref         : 'User',
             required    : false
-        }]
+        }],
+        teacher         : {
+            type        : mongoose.Schema.Types.ObjectId,
+            ref         : 'User',
+            required    : false
+        }
     });
 
 module.exports          = mongoose.model( 'Assignment', AssignmentSchema );

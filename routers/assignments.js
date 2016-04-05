@@ -5,7 +5,7 @@ var express     = require( 'express' ),
     Session     = require( '../lib/session' );
 
 router.get( '/', Session.validate, function ( req, res, next ) {
-    var filters     = [ 'course', 'date', 'name', 'students' ],
+    var filters     = [ 'course', 'date', 'name', 'students', 'teacher' ],
         refs        = [
             {
                 field   : 'course',
@@ -13,6 +13,10 @@ router.get( '/', Session.validate, function ( req, res, next ) {
             },
             {
                 field   : 'students',
+                select  : 'avatar email external_id name'
+            },
+            {
+                field   : 'teacher',
                 select  : 'avatar email external_id name'
             }
         ];
@@ -26,7 +30,8 @@ router.post( '/', function ( req, res, next ) {
         date        : req.body.date,
         due_date    : req.body.due_date,
         name        : req.body.name,
-        students    : req.body.students
+        students    : req.body.students,
+        teacher     : req.body.teacher
     }, function ( err, assignment ) {
         if ( err || !assignment ) {
             err         = new Error( 'Invalid assignment data' );
