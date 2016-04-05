@@ -44,7 +44,8 @@ exports.create      = function ( total, cb ) {
                     File.create({
                         course  : course._id,
                         date    : date.toISOString(),
-                        file    : chance.word({ syllables : 3 })
+                        file    : chance.word({ syllables : 3 }),
+                        teacher : course.teacher
                     }, function ( err, file ) {
                         callback( null, file );
                     });
