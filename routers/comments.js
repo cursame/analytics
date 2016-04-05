@@ -5,7 +5,7 @@ var express     = require( 'express' ),
     Session     = require( '../lib/session' );
 
 router.get( '/', Session.validate, function ( req, res, next ) {
-    var filters     = [ 'course', 'date', 'student' ],
+    var filters     = [ 'course', 'date', 'student', 'teacher' ],
         refs        = [
             {
                 field   : 'course',
@@ -13,6 +13,10 @@ router.get( '/', Session.validate, function ( req, res, next ) {
             },
             {
                 field   : 'student',
+                select  : 'avatar email external_id name'
+            },
+            {
+                field   : 'teacher',
                 select  : 'avatar email external_id name'
             }
         ];
@@ -25,7 +29,8 @@ router.post( '/', function ( req, res, next ) {
         comment : req.body.comment,
         course  : req.body.course,
         date    : req.body.date,
-        student : req.body.student
+        student : req.body.student,
+        teacher : req.body.teacher
     }, function ( err, comment ) {
         if ( err || !comment ) {
             err         = new Error( 'Invalid comment data' );

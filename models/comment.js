@@ -17,6 +17,11 @@ var mongoose        = require( 'mongoose' ),
             type        : mongoose.Schema.Types.ObjectId,
             ref         : 'User',
             required    : true
+        },
+        teacher         : {
+            type        : mongoose.Schema.Types.ObjectId,
+            ref         : 'User',
+            required    : true
         }
     });
 
