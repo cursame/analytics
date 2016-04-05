@@ -5,7 +5,7 @@ var express     = require( 'express' ),
     Utils       = require( '../lib/utils' );
 
 router.get( '/', Session.validate, function ( req, res, next ) {
-    var filters     = [ 'course', 'date', 'name' ],
+    var filters     = [ 'course', 'date', 'name', 'students', 'teacher' ],
         refs        = [
             {
                 field   : 'course',
@@ -13,6 +13,10 @@ router.get( '/', Session.validate, function ( req, res, next ) {
             },
             {
                 field   : 'students',
+                select  : 'avatar email external_id name'
+            },
+            {
+                field   : 'teacher',
                 select  : 'avatar email external_id name'
             }
         ];
@@ -25,7 +29,8 @@ router.post( '/', function ( req, res, next ) {
         course      : req.body.course,
         date        : req.body.date,
         name        : req.body.name,
-        students    : req.body.students
+        students    : req.body.students,
+        teacher     : req.body.teacher
     }, function ( err, discussion ) {
         if ( err || !discussion ) {
             err         = new Error( 'Invalid discussion data' );
