@@ -5,7 +5,12 @@ var assert  = require( 'assert' ),
     Auth    = require( './lib/auth' );
 
 describe( 'Courses Resource', function () {
-    var assignment      = {
+    var activity        = {
+            activity    : 'LIKE',
+            date        : ( new Date() ).toISOString()
+        },
+        activity_id     = '',
+        assignment      = {
             date        : ( new Date() ).toISOString(),
             due_date    : ( new Date() ).toISOString(),
             name        : 'Test Assignment',
@@ -91,6 +96,7 @@ describe( 'Courses Resource', function () {
                 }
 
                 student_id          = res.body._id;
+                activity.user       = res.body._id;
                 comment.student     = res.body._id;
                 grade.student       = res.body._id;
                 login.user          = res.body._id;
@@ -155,6 +161,8 @@ describe( 'Courses Resource', function () {
                 res.body.should.have.property( 'teacher' );
 
                 course_id           = res.body._id;
+                activity.course     = res.body._id;
+                activity.teacher    = res.body.teacher;
                 assignment.course   = res.body._id;
                 assignment.teacher  = res.body.teacher;
                 comment.course      = res.body._id;
@@ -226,6 +234,124 @@ describe( 'Courses Resource', function () {
                 assert.equal( true, Array.isArray( res.body.results ) );
                 done();
             });
+    });
+
+    it ( 'gets a 403 error when attempting to create an invalid activity object', function ( done ) {
+        request( server )
+            .post( '/activities' )
+            .send( Auth.sign({ date : activity.date, user : activity.user }) )
+            .expect( 403, done );
+    });
+
+    it ( 'creates an activity record in the system', function ( done ) {
+        request( server )
+            .post( '/activities' )
+            .send( Auth.sign( activity ) )
+            .end( function ( err, res ) {
+                if ( err ) {
+                    throw err;
+                }
+
+                res.body.should.have.property( '_id' );
+                res.body.should.have.property( 'activity' );
+                res.body.should.have.property( 'course' );
+                res.body.should.have.property( 'date' );
+                res.body.should.have.property( 'teacher' );
+                res.body.should.have.property( 'user' );
+
+                activity_id   = res.body._id;
+                done();
+            });
+    });
+
+    it ( 'gets a list of activities from the system', function ( done ) {
+        request( server )
+            .get( '/activities' )
+            .send( Auth.sign() )
+            .end( function ( err, res ) {
+                if ( err ) {
+                    throw err;
+                }
+
+                res.body.should.have.property( 'pagination' );
+                res.body.should.have.property( 'results' );
+                res.body.pagination.should.have.property( 'total' );
+                res.body.pagination.should.have.property( 'page' );
+                res.body.pagination.should.have.property( 'per_page' );
+
+                res.body.results[0].should.have.property( 'activity' );
+                res.body.results[0].should.have.property( 'course' );
+                res.body.results[0].should.have.property( 'date' );
+                res.body.results[0].should.have.property( 'teacher' );
+                res.body.results[0].should.have.property( 'user' );
+
+                assert.equal( 'string', typeof res.body.results[0].course );
+                assert.equal( 'string', typeof res.body.results[0].teacher );
+                assert.equal( 'string', typeof res.body.results[0].user );
+                assert.equal( true, Array.isArray( res.body.results ) );
+                done();
+            });
+    });
+
+    it ( 'gets an extended list of activities filtered by course, setting the select fields of the query', function ( done ) {
+        request( server )
+            .get( '/activities?course=' + course_id + '&expanded=true&page=1&per_page=10&sort=course&order=DESC&select=activity+course' )
+            .send( Auth.sign() )
+            .end( function ( err, res ) {
+                if ( err ) {
+                    throw err;
+                }
+
+                res.body.should.have.property( 'pagination' );
+                res.body.should.have.property( 'results' );
+                res.body.pagination.should.have.property( 'total' );
+                res.body.pagination.should.have.property( 'page' );
+                res.body.pagination.should.have.property( 'per_page' );
+
+                res.body.results[0].should.have.property( 'activity' );
+                res.body.results[0].should.have.property( 'course' );
+                res.body.results[0].should.not.have.property( 'date' );
+
+                assert.equal( 'object', typeof res.body.results[0].course );
+                assert.equal( true, Array.isArray( res.body.results ) );
+                done();
+            });
+    });
+
+    it ( 'gets an aggregated list of courses by course', function ( done ) {
+        request( server )
+            .get( '/activities?aggregate=course&course=' + course_id )
+            .send( Auth.sign() )
+            .end( function ( err, res ) {
+                if ( err ) {
+                    throw err;
+                }
+
+                res.body.should.have.property( 'pagination' );
+                res.body.should.have.property( 'results' );
+                res.body.pagination.should.have.property( 'total' );
+                res.body.pagination.should.have.property( 'page' );
+                res.body.pagination.should.have.property( 'per_page' );
+
+                res.body.results[0].should.have.property( '_id' );
+                res.body.results[0].should.have.property( 'count' );
+
+                done();
+            });
+    });
+
+    it ( 'gets a 404 error when attempting to remove an unexisting activity', function ( done ) {
+        request( server )
+            .delete( '/activities/1241225' )
+            .send( Auth.sign() )
+            .expect( 404, done );
+    });
+
+    it ( 'removes the created activity record', function ( done ) {
+        request( server )
+            .delete( '/activities/' + activity_id )
+            .send( Auth.sign() )
+            .expect( 200, done );
     });
 
     it ( 'gets a 403 error when attempting to create an invalid assignment object', function ( done ) {
