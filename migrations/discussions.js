@@ -33,27 +33,41 @@ exports.create      = function ( total, cb ) {
                     });
                 },
                 function ( course, callback ) {
-                    var index   = chance.integer({
-                        min     : 0,
-                        max     : course.students.length - 1
-                    });
+                    var number      = chance.integer({
+                            min     : 0,
+                            max     : course.students.length
+                        }),
+                        index       = chance.integer({
+                            min     : 0,
+                            max     : course.students.length
+                        }),
+                        students    = [];
 
-                    callback( null, course, course.students[index] );
+                    for ( var j = 0; j < number; j++ ) {
+                        if ( index >= course.students.length ) {
+                            index   = 0;
+                        }
+
+                        students.push( course.students[index++] );
+                    }
+
+                    callback( null, course, students );
                 },
-                function ( course, student, callback ) {
+                function ( course, students, callback ) {
                     var date    = new Date( chance.hammertime() ),
                         start   = new Date( course.start );
 
                     date.setYear( start.getFullYear() );
 
-                    callback( null, course, student, date );
+                    callback( null, course, students, date );
                 },
-                function ( course, student, date, callback ) {
+                function ( course, students, date, callback ) {
                     Discussion.create({
-                        course  : course._id,
-                        date    : date.toISOString(),
-                        name    : chance.word({ syllables : 4 }),
-                        student : student
+                        course      : course._id,
+                        date        : date.toISOString(),
+                        name        : chance.word({ syllables : 4 }),
+                        students    : students,
+                        teacher     : course.teacher
                     }, function ( err, discussion ) {
                         callback( null, discussion );
                     });
