@@ -53,16 +53,16 @@ describe( 'Courses Resource', function () {
         questionary_id  = '',
         student         = {
             email       : 'student@cursa.me',
-            external_id : 'student_1',
-            name        : 'John Doe',
-            type        : 5
+            external_id : -1314141,
+            name        : 'John Doe UnitTesting',
+            type        : 2
         },
         student_id      = '',
         teacher         = {
             email       : 'teacher@cursa.me',
-            external_id : 'teacher_1',
-            name        : 'Jane Doe',
-            type        : 4
+            external_id : -1414225,
+            name        : 'Jane Doe UnitTesting',
+            type        : 1
         },
         teacher_id      = '';
 
@@ -156,11 +156,16 @@ describe( 'Courses Resource', function () {
 
                 course_id           = res.body._id;
                 assignment.course   = res.body._id;
+                assignment.teacher  = res.body.teacher;
                 comment.course      = res.body._id;
+                comment.teacher     = res.body.teacher;
                 discussion.course   = res.body._id;
+                discussion.teacher  = res.body.teacher;
                 file.course         = res.body._id;
+                file.teacher        = res.body.teacher;
                 grade.course        = res.body._id;
                 questionary.course  = res.body._id;
+                questionary.teacher = res.body.teacher;
                 done();
             });
     });

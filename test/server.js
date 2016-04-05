@@ -212,7 +212,7 @@ describe( 'Applications Removal', function () {
 describe( 'Users', function () {
     var user        = {
             email       : 'testing@cursa.me',
-            external_id : 'abcdef1234',
+            external_id : -1415364,
             name        : 'UnitTesting',
             pass        : 'unittest',
             type        : 0
@@ -254,13 +254,6 @@ describe( 'Users', function () {
             .put( '/users/125253' )
             .send( Auth.sign({ name : 'UnitTestingUser' }) )
             .expect( 404, done );
-    });
-
-    it ( 'get a 403 error when attempting to set an existing external id', function ( done ) {
-        request( server )
-            .put( '/users/' + user_id )
-            .send( Auth.sign( { external_id : 1 } ) )
-            .expect( 403, done );
     });
 
     it ( 'update the created user without changing the password', function ( done ) {
