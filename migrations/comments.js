@@ -53,7 +53,8 @@ exports.create      = function ( total, cb ) {
                         comment : chance.sentence(),
                         course  : course._id,
                         date    : date.toISOString(),
-                        student : student
+                        student : student,
+                        teacher : course.teacher
                     }, function ( err, comment ) {
                         callback( null, comment );
                     });
