@@ -14,7 +14,7 @@ var express     = require( 'express' ),
     };
 
 router.get( '/', Session.validate, function ( req, res, next ) {
-    var filters     = [ 'creation_date', 'email', 'external_id', 'name', 'type' ];
+    var filters     = [ '_id', 'creation_date', 'email', 'external_id', 'name', 'type' ];
 
     Utils.paginate( User, filters, [], req, res, next );
 });
