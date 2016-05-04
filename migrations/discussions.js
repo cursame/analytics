@@ -1,5 +1,5 @@
 var async           = require( 'async' ),
-    Chance          = require( 'Chance' ),
+    Chance          = require( 'chance' ),
     Course          = require( '../models/course' ),
     Discussion      = require( '../models/discussion' ),
     chance          = new Chance(),
