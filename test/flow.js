@@ -50,6 +50,10 @@ describe( 'Courses Resource', function () {
             date        : ( new Date() ).toISOString()
         },
         login_id        = '',
+        network         = {
+            name        : 'UnitTesting'
+        },
+        network_id      = '',
         questionary     = {
             date        : ( new Date() ).toISOString(),
             name        : 'Test Questionary',
@@ -70,6 +74,22 @@ describe( 'Courses Resource', function () {
             type        : 1
         },
         teacher_id      = '';
+
+    it ( 'creates a network record in the database', function ( done ) {
+        request( server )
+            .post( '/networks' )
+            .send( Auth.sign( network ) )
+            .end( function ( err, res ) {
+                if ( err ) {
+                    throw err;
+                }
+
+                network_id      = res.body._id;
+                teacher.network = res.body._id;
+                student.network = res.body._id;
+                done();
+            });
+    });
 
     it ( 'creates a teacher user in the system for the courses evaluation', function ( done ) {
         request( server )
@@ -900,6 +920,13 @@ describe( 'Courses Resource', function () {
     it ( 'removes the teacher user created', function ( done ) {
         request( server )
             .delete( '/users/' + teacher_id )
+            .send( Auth.sign() )
+            .expect( 200, done );
+    });
+
+    it ( 'removes the network created', function ( done ) {
+        request( server )
+            .delete( '/networks/' + network_id )
             .send( Auth.sign() )
             .expect( 200, done );
     });

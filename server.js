@@ -19,6 +19,7 @@ var activities      = require( './routers/activities' ),
     files           = require( './routers/files' ),
     grades          = require( './routers/grades' ),
     logins          = require( './routers/logins' ),
+    networks        = require( './routers/networks' ),
     questionaries   = require( './routers/questionaries' ),
     sessions        = require( './routers/sessions' ),
     users           = require( './routers/users' );
@@ -32,6 +33,7 @@ app.use( '/discussions', discussions );
 app.use( '/files', files );
 app.use( '/grades', grades );
 app.use( '/logins', logins );
+app.use( '/networks', networks );
 app.use( '/questionaries', questionaries );
 app.use( '/sessions', sessions );
 app.use( '/users', users );
