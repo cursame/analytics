@@ -4,6 +4,11 @@ var mongoose    = require( 'mongoose' ),
             type        : Date,
             required    : true
         },
+        network         : {
+            type        : mongoose.Schema.Types.ObjectId,
+            ref         : 'Network',
+            required    : true
+        },
         type            : {
             type        : Number,
             required    : true

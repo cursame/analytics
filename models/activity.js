@@ -14,6 +14,11 @@ var mongoose        = require( 'mongoose' ),
             type        : Date,
             required    : true
         },
+        network         : {
+            type        : mongoose.Schema.Types.ObjectId,
+            ref         : 'Network',
+            required    : true
+        },
         teacher         : {
             type        : mongoose.Schema.Types.ObjectId,
             ref         : 'User',

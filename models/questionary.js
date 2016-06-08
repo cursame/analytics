@@ -13,6 +13,11 @@ var mongoose            = require( 'mongoose' ),
             type        : String,
             required    : true
         },
+        network         : {
+            type        : mongoose.Schema.Types.ObjectId,
+            ref         : 'Network',
+            required    : true
+        },
         students        : [{
             type        : mongoose.Schema.Types.ObjectId,
             ref         : 'User',

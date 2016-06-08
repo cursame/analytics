@@ -9,6 +9,11 @@ var mongoose        = require( 'mongoose' ),
             required    : true,
             default     : Date.now
         },
+        network         : {
+            type        : mongoose.Schema.Types.ObjectId,
+            ref         : 'Network',
+            required    : true
+        },
         timestamp       : {
             type        : Date,
             required    : true,

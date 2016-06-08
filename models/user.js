@@ -10,10 +10,6 @@ var mongoose    = require( 'mongoose' ),
             required    : true,
             default     : Date.now
         },
-        name            : {
-            type        : String,
-            required    : true
-        },
         email           : {
             type        : String,
             required    : true,
@@ -27,6 +23,15 @@ var mongoose    = require( 'mongoose' ),
             index       : {
                 unique  : true
             }
+        },
+        name            : {
+            type        : String,
+            required    : true
+        },
+        network         : {
+            type        : mongoose.Schema.Types.ObjectId,
+            ref         : 'Network',
+            required    : true
         },
         pass            : {
             type        : String,

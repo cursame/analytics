@@ -5,7 +5,7 @@ var express     = require( 'express' ),
     Session     = require( '../lib/session' );
 
 router.get( '/', Session.validate, function ( req, res, next ) {
-    var filters     = [ 'course', 'date', 'name', 'students', 'teacher' ],
+    var filters     = [ 'course', 'date', 'name', 'network', 'students', 'teacher' ],
         refs        = [
             {
                 field   : 'course',
@@ -30,6 +30,7 @@ router.post( '/', function ( req, res, next ) {
         date        : req.body.date,
         due_date    : req.body.due_date,
         name        : req.body.name,
+        network     : req.body.network,
         students    : req.body.students,
         teacher     : req.body.teacher
     }, function ( err, assignment ) {

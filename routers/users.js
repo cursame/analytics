@@ -14,7 +14,7 @@ var express     = require( 'express' ),
     };
 
 router.get( '/', Session.validate, function ( req, res, next ) {
-    var filters     = [ '_id', 'creation_date', 'email', 'external_id', 'name', 'type' ];
+    var filters     = [ '_id', 'creation_date', 'email', 'external_id', 'name', 'network', 'type' ];
 
     Utils.paginate( User, filters, [], req, res, next );
 });
@@ -42,9 +42,10 @@ router.get( '/:id', Session.validate, function ( req, res, next ) {
 router.post( '/', function ( req, res, next ) {
     User.create({
         avatar      : req.body.avatar,
-        name        : req.body.name,
         email       : req.body.email,
         external_id : req.body.external_id,
+        name        : req.body.name,
+        network     : req.body.network,
         pass        : req.body.pass,
         type        : req.body.type
     }, function ( err, user ) {

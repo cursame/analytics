@@ -9,6 +9,7 @@ router.post( '/', function ( req, res, next ) {
             res.json({
                 session         : Encrypt.encode( session.id ),
                 access_level    : session.access_level,
+                network         : session.network,
                 user_id         : session.user_id
             });
         } else {

@@ -5,7 +5,7 @@ var express     = require( 'express' ),
     Utils       = require( '../lib/utils' );
 
 router.get( '/', Session.validate, function ( req, res, next ) {
-    var filters     = [ 'date', 'type', 'user' ],
+    var filters     = [ 'date', 'network', 'type', 'user' ],
         refs        = [
             {
                 field   : 'user',
@@ -19,6 +19,7 @@ router.get( '/', Session.validate, function ( req, res, next ) {
 router.post( '/', function ( req, res, next ) {
     Login.create({
         date    : req.body.date,
+        network : req.body.network,
         type    : req.body.type,
         user    : req.body.user
     }, function ( err, login ) {
