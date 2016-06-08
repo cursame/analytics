@@ -4,7 +4,8 @@ var Utils       = require( './lib/utils' ),
     email       = process.argv[3],
     ext_id      = process.argv[4],
     pass        = process.argv[5],
-    type        = process.argv[6];
+    network     = process.argv[6],
+    type        = process.argv[7];
 
 Utils.connectDB();
 
@@ -12,6 +13,7 @@ User.create({
     email       : email,
     external_id : ext_id,
     name        : name,
+    network     : network,
     pass        : pass,
     type        : type
 }, function ( err, user ) {
@@ -23,6 +25,7 @@ User.create({
         console.log( 'Name - ' + user.name );
         console.log( 'Email - ' + user.email );
         console.log( 'External ID - ' + user.external_id );
+        console.log( 'Network - ', user.network );
         console.log( 'Pass - ' + pass );
         console.log( 'Type - ' + user.type );
     }
