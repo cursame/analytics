@@ -7,25 +7,36 @@ var async               = require( 'async' ),
     Files               = require( './files' ),
     Grades              = require( './grades' ),
     Logins              = require( './logins' ),
+    Networks            = require( './networks' ),
     Questionaries       = require( './questionaries' ),
     Users               = require( './users' ),
     Utils               = require( '../lib/utils' );
-    numberStudents      = process.argv[2],
-    numberTeachers      = process.argv[3],
-    numberAdmins        = process.argv[4],
-    numberCourses       = process.argv[5],
-    numberAssignments   = process.argv[6],
-    numberComments      = process.argv[7],
-    numberDiscussions   = process.argv[8],
-    numberFiles         = process.argv[9],
-    numberGrades        = process.argv[10],
-    numberLogins        = process.argv[11],
-    numberQuestionaries = process.argv[12],
-    numberActivities    = process.argv[13];
+    numberNetworks      = process.argv[2],
+    numberStudents      = process.argv[3],
+    numberTeachers      = process.argv[4],
+    numberAdmins        = process.argv[5],
+    numberCourses       = process.argv[6],
+    numberAssignments   = process.argv[7],
+    numberComments      = process.argv[8],
+    numberDiscussions   = process.argv[9],
+    numberFiles         = process.argv[10],
+    numberGrades        = process.argv[11],
+    numberLogins        = process.argv[12],
+    numberQuestionaries = process.argv[13],
+    numberActivities    = process.argv[14];
 
 Utils.connectDB();
 
 async.series([
+    function ( callback ) {
+        if ( numberNetworks !== undefined && numberNetworks > 0 ) {
+            Networks.create( numberNetworks, function ( total ) {
+                callback( null, total );
+            });
+        } else {
+            callback( null, 0 );
+        }
+    },
     function ( callback ) {
         if ( numberStudents !== undefined && numberStudents > 0 ) {
             Users.create( 2, numberStudents, function ( total ) {
@@ -55,7 +66,7 @@ async.series([
     },
     function ( callback ) {
         if ( numberCourses !== undefined && numberCourses > 0 ) {
-            Courses.create( numberCourses, 15, function ( total ) {
+            Courses.create( numberCourses, 2, function ( total ) {
                 callback( null, total );
             });
         } else {
@@ -135,17 +146,18 @@ async.series([
         }
     }
 ], function ( err, results ) {
-    console.log( 'Students created: ' + results[0] );
-    console.log( 'Teachers created: ' + results[1] );
-    console.log( 'Admins created: ' + results[2] );
-    console.log( 'Courses created: ' + results[3] );
-    console.log( 'Assignments created: ' + results[4] );
-    console.log( 'Comments created: ' + results[5] );
-    console.log( 'Discussions created: ' + results[6] );
-    console.log( 'Files created: ' + results[7] );
-    console.log( 'Grades created: ' + results[8] );
-    console.log( 'Logins created: ' + results[9] );
-    console.log( 'Questionaries created: ' + results[10] );
-    console.log( 'Activities created: ' + results[11] );
+    console.log( 'Networks created: ' + results[0] );
+    console.log( 'Students created: ' + results[1] );
+    console.log( 'Teachers created: ' + results[2] );
+    console.log( 'Admins created: ' + results[3] );
+    console.log( 'Courses created: ' + results[4] );
+    console.log( 'Assignments created: ' + results[5] );
+    console.log( 'Comments created: ' + results[6] );
+    console.log( 'Discussions created: ' + results[7] );
+    console.log( 'Files created: ' + results[8] );
+    console.log( 'Grades created: ' + results[9] );
+    console.log( 'Logins created: ' + results[10] );
+    console.log( 'Questionaries created: ' + results[11] );
+    console.log( 'Activities created: ' + results[12] );
     process.exit();
 });

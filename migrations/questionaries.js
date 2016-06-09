@@ -66,6 +66,7 @@ exports.create      = function ( total, cb ) {
                         course      : course._id,
                         date        : date,
                         name        : chance.word({ syllables : 3 }),
+                        network     : course.network,
                         students    : students,
                         teacher     : course.teacher
                     }, function ( err, questionary ) {

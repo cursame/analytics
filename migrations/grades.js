@@ -57,6 +57,7 @@ exports.create      = function ( total, cb ) {
                             min     : 5,
                             max     : 10
                         }),
+                        network : course.network,
                         student : student
                     }, function ( err, grade ) {
                         callback( null, grade );

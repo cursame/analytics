@@ -64,6 +64,7 @@ exports.create      = function ( total, cb ) {
                         activity    : avActivities[index],
                         course      : course._id,
                         date        : date.toISOString(),
+                        network     : course.network,
                         user        : user,
                         teacher     : course.teacher
                     }, function ( err, activity ) {

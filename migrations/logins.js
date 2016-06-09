@@ -52,7 +52,7 @@ exports.create      = function ( total, cb ) {
                                 type    : 3
                             }
                         ]
-                    }).select( '_id type' ).skip( skip ).exec( function ( err, user ) {
+                    }).select( '_id network type' ).skip( skip ).exec( function ( err, user ) {
                         callback( null, user );
                     });
                 },
@@ -67,6 +67,7 @@ exports.create      = function ( total, cb ) {
                 function ( user, date, callback ) {
                     Login.create({
                         date    : date.toISOString(),
+                        network : user.network,
                         type    : user.type,
                         user    : user._id
                     }, function ( err, login ) {

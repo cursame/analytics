@@ -53,6 +53,7 @@ exports.create      = function ( total, cb ) {
                         comment : chance.sentence(),
                         course  : course._id,
                         date    : date.toISOString(),
+                        network : course.network,
                         student : student,
                         teacher : course.teacher
                     }, function ( err, comment ) {
