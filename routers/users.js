@@ -33,7 +33,7 @@ router.get( '/:id', Session.validate, function ( req, res, next ) {
 
             next( err );
         } else {
-            if ( req.session.user_id == user._id.toString() && req.session.access_level != 0 ) {
+            if ( req.session.user_id == user._id.toString() && req.session.access_level > 0 ) {
                 err         = new Error( 'Permission denied' );
                 err.status  = 403;
 
