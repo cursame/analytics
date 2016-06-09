@@ -214,6 +214,7 @@ describe( 'Users', function () {
             email       : 'testing@cursa.me',
             external_id : -1415364,
             name        : 'UnitTesting',
+            network     : '5758b12dd9000d670eb7bb33',
             pass        : 'unittest',
             type        : 0
         },

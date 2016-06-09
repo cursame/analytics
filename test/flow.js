@@ -84,9 +84,18 @@ describe( 'Courses Resource', function () {
                     throw err;
                 }
 
-                network_id      = res.body._id;
-                teacher.network = res.body._id;
-                student.network = res.body._id;
+                network_id          = res.body._id;
+                activity.network    = res.body._id;
+                assignment.network  = res.body._id;
+                comment.network     = res.body._id;
+                course.network      = res.body._id;
+                discussion.network  = res.body._id;
+                file.network        = res.body._id;
+                grade.network       = res.body._id;
+                login.network       = res.body._id;
+                questionary.network = res.body._id;
+                teacher.network     = res.body._id;
+                student.network     = res.body._id;
                 done();
             });
     });
