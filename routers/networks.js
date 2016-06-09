@@ -1,7 +1,14 @@
 var express     = require( 'express' ),
     Network     = require( '../models/network' ),
     Session     = require( '../lib/session' ),
+    Utils       = require( '../lib/utils' ),
     router      = express.Router();
+
+router.get( '/', Session.validate, function ( req, res, next ) {
+    var supported   = [ 'name' ];
+
+    Utils.paginate( Network, supported, [], req, res, next );
+});
 
 router.post( '/', function ( req, res, next ) {
     Network.create({
